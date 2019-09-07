@@ -3,18 +3,36 @@ package sample.customer.biz.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.AssertFalse;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Customer implements Serializable {
 
 	private int id;
 
+	@NotNull
+	@Size(max = 20)
 	private String name;
 
+	@NotNull
+	@Pattern(regexp = ".+@.+")
 	private String emailAddress;
 
+	@NotNull
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private Date birthday;
 
+	@Max(9)
+	@Min(0)
 	private Integer favoriteNumber;
 
+	@AssertFalse(message = "{errors.emailAddress.ng")
 	public boolean isNgEmail() {
 		if(emailAddress == null) {
 			return false;
