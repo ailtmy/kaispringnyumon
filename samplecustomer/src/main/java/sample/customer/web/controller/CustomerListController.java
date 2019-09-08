@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -33,10 +34,20 @@ public class CustomerListController {
 	}
 
 	@RequestMapping(path="/customer/{customerId}", method=GET)
-	public String showAllCustomerDetail(@PathVariable int customerId,
+	public String showCustomerDetail(@PathVariable int customerId,
 			Model model) throws DataNotFoundException {
 		Customer customer = customerService.findById(customerId);
 		model.addAttribute("customer", customer);
 		return "customer/detail";
+	}
+
+	@ExceptionHandler(DataNotFoundException.class)
+	public String handleException() {
+		return "customer/notfound";
+	}
+
+	@ExceptionHandler
+	public String handleException(Exception e) {
+		return "erroor/system";
 	}
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +10,19 @@
 </head>
 <body>
 <h2>顧客一覧画面</h2>
+<c:if test="${editCustomer != null}">
+以下の顧客が更新されました。
+<dl>
+	<dt>名前</dt>
+	<dd><c:out value="${editedCustomer.name}"/></dd>
+	<dt>Eメールアドレス</dt>
+	<dd><c:out value="${editedCustomer.emailAddress}"/></dd>
+	<dt>誕生日</dt>
+	<dd><fmt:formatDate pattern="yyyy/MM/dd" value="${editedCustomer.birthday}"/></dd>
+	<dt>好きな数字</dt>
+	<dd><c:out value="${editedCustomer.favoriteNumber}"/></dd>
+</dl>
+</c:if>
 <table border="1">
 	<tr>
 		<th>ID</th>

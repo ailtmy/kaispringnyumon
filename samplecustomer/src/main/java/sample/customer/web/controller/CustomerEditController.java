@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import sample.customer.biz.domain.Customer;
 import sample.customer.biz.service.CustomerService;
@@ -68,10 +69,15 @@ public class CustomerEditController {
 	@RequestMapping(
 			path="/review", params="_event_confirmed", method=POST)
 	public String edit(
-			@ModelAttribute("editCustomer") Customer customer)
+			@ModelAttribute("editCustomer") Customer customer,
+			SessionStatus sessionStatus,
+			RedirectAttributes redirectAttributes)
 				throws DataNotFoundException{
 		customerService.update(customer);
-		return "redirect:edited";
+		sessionStatus.setComplete();
+
+		redirectAttributes.addFlashAttribute("editedCustomer", customer);
+		return "redirect/customer";
 	}
 
 	@RequestMapping(path="/edited", method=GET)
