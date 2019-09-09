@@ -9,13 +9,30 @@
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<http>
-		<intercept-url pattern="/top.jsp" access="permitAll()" />
-		<intercept-url pattern="/admin/**" access="hasAuthority('ROLE_ADMIN')"/>
-		<intercept-url pattern="/**" access="isAuthenticated()"/>
-		<form-login default-target-url="/top.jsp"/>
-		<logout logout-url="/logout" logout-success-url="/top.jsp"/>
+		<intercept-url method="GET" pattern="/top.jsp" access="permitAll()" />
+		<intercept-url method="GET" pattern="/login.jsp" access="permitAll()" />
+		<intercept-url method="GET" pattern="processLogin" access="permitAll()" />
+		<intercept-url method="GET" pattern="/logout" access="isAuthenticated()" />
+		<intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
+		<intercept-url pattern="/user/**" access="isAuthenticated()"/>
+		<intercept-url pattern="/**" access="denyAll()"/>
+		<form-login
+			login-page="/login.jsp"
+			login-processing-url="/processLogin"
+			default-target-url="/top.jsp"
+			authentication-failure-url="/login.jsp"
+			username-parameter="paramLoginId"
+			password-parameter="paramPassword"/>
+		<logout
+			logout-url="/logout"
+			logout-success-url="/top.jsp"
+			invalidate-session="true"
+			delete-cookies="JSESSIONID, OTHER1, OTHER2"/>
 		<csrf disabled="true"/>
+		<access-denied-handler error-page="/accessDenied.jsp"/>
 	</http>
+
+	<global-method-security pre-post-annotations="enabled"/>
 
 	<authentication-manager>
 		<authentication-provider>
@@ -23,6 +40,16 @@
 				<user name="user" password="userpassword" authorities="ROLE_USER"/>
 				<user name="admin" password="adminpassword" authorities="ROLE_ADMIN"/>
 			</user-service>
+			<jdbc-user-service
+				data-source-ref="authDataSource"
+				users-by-username-query
+					="select LOGIN_ID, PASSWORD, true from T_USER where LOGIN_ID=?"
+				authorities-by-username-query
+					="select LOGIN_ID, ROLE_NAME from T_ROLE
+						inner join T_USER_ROLE on T_ROLE.ID = T_USER_ROLE.ROLE_ID
+						inner join T_USER on T_USER_ROLE.USER_ID = T_USER.ID
+						where LOGIN_ID = ?" />
 		</authentication-provider>
 	</authentication-manager>
 </beans:bean>
+

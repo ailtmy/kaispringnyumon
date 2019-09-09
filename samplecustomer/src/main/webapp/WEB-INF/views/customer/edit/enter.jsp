@@ -33,7 +33,7 @@
 		<form:errors path="favoriteNumber"/>
 	</dd>
 </dl>
-<button type="sumbmit" name="_event_proceed" value="proceed">
+<button type="submit" name="_event_proceed" value="proceed">
 	次へ
 </button>
 </form:form>

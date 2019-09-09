@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:bean id="userService"
+	class="sample.security.authentication.SampleJdbcDaoImpl">
+	<beans:property name="dataSource" ref="authDataSource"/>
+	<beans:property name="usersByUsernameQuery">
+		<beans:value>
+			select LOGIN_ID, PASSWORD, FULL_NAME, DEPT_NAME
+			from T_USER
+			where LOGIN_ID = ?
+		</beans:value>
+	</beans:property>
+	<beans:property name="authoritiesByUsernameQuery">
+		<beans:value>
+			select LOGIN_ID, ROLE_NAME
+			from T_ROLE
+			inner join T_USER_ROLE on T_ROLE.ID = T_USER_ROLE.ROLE_ID
+			inner join T_USER on T_USER_ROLE.USER_ID = T_USER.ID
+			where LOGIN_ID = ?
+		</beans:value>
+	</beans:property>
+</beans:bean>
+
+<!--
+<authentication-manager>
+	<authentication-provider user-service-ref="userService">
+	</authentication-provider>
+</authentication-manager>
+-->
